@@ -1,26 +1,38 @@
+let coins = 0;
+let coinsPerClick = 1;
+
 function onTelegramAuth(user) {
     alert('Добро пожаловать, ' + user.first_name);
     document.getElementById('auth-section').style.display = 'none';
-    document.getElementById('control-panel').style.display = 'block';
+    document.getElementById('game-section').style.display = 'block';
 }
 
-function updateSpam() {
-    const message = document.getElementById('spam-message').value;
-    const count = document.getElementById('spam-count').value;
-    window.pywebview.api.update_spam(message, count).then(response => {
-        alert(response);
-    });
+function addCoin() {
+    coins += coinsPerClick;
+    document.getElementById('coins').innerText = 'Coins: ' + coins;
+    showAnimation('+1');
 }
 
-function toggleFeature() {
-    const feature = 'feature1';
-    const state = document.getElementById(feature).checked;
-    window.pywebview.api.toggle_feature(feature, state).then(response => {
-        alert(response);
-    });
+function showAnimation(text) {
+    const animation = document.createElement('div');
+    animation.classList.add('coin-animation');
+    animation.innerText = text;
+    document.body.appendChild(animation);
+
+    setTimeout(() => {
+        animation.remove();
+    }, 1000);
 }
 
-document.getElementById('feature1').addEventListener('change', toggleFeature);
+function buyUpgrade(cost, increase) {
+    if (coins >= cost) {
+        coins -= cost;
+        coinsPerClick += increase;
+        document.getElementById('coins').innerText = 'Coins: ' + coins;
+    } else {
+        alert('Not enough coins!');
+    }
+}
 
 // Добавляем кнопку виджета Telegram
 function addTelegramLoginButton() {
