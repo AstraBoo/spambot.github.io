@@ -1,19 +1,7 @@
-function sendCode() {
-    const phone = document.getElementById('phone').value;
-    window.pywebview.api.send_code(phone).then(response => {
-        alert(response);
-        document.getElementById('code-section').style.display = 'block';
-    });
-}
-
-function signIn() {
-    const phone = document.getElementById('phone').value;
-    const code = document.getElementById('code').value;
-    window.pywebview.api.sign_in(phone, code).then(response => {
-        alert(response);
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('control-panel').style.display = 'block';
-    });
+function onTelegramAuth(user) {
+    alert('Добро пожаловать, ' + user.first_name);
+    document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('control-panel').style.display = 'block';
 }
 
 function updateSpam() {
@@ -33,3 +21,25 @@ function toggleFeature() {
 }
 
 document.getElementById('feature1').addEventListener('change', toggleFeature);
+
+// Добавляем кнопку виджета Telegram
+function addTelegramLoginButton() {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = "https://telegram.org/js/telegram-widget.js?19";
+    script.setAttribute('data-telegram-login', 'regbotada_bot');
+    script.setAttribute('data-size', 'large');
+    script.setAttribute('data-radius', '10');
+    script.setAttribute('data-auth-url', '');
+    script.setAttribute('data-request-access', 'write');
+    script.setAttribute('data-userpic', 'false');
+    document.getElementById('telegram-login-button').appendChild(script);
+}
+
+addTelegramLoginButton();
+
+// Обработчик события для виджета Telegram
+window.addEventListener('telegramLogin', function(event) {
+    const user = event.detail.user;
+    onTelegramAuth(user);
+});
